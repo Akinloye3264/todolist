@@ -1,0 +1,19 @@
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10%;
+    border-radius: 20px;
+    background-color: blue
+}
+#taskInput{
+    border-radius: 50px;
+    size: 50px;
+}
+
+input[type="button"] {
+    border-radius: 50px;
+    size: 50px;
+    
+}
+
