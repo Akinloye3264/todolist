@@ -1,21 +1,28 @@
 function addtask(){
     const inputbox = document.getElementById("taskInput");
     const taskText = inputbox.value;
-
+    const taskList = document.getElementById("taskList");
+    // let numberOfTasks = taskList.getElementsByTagName("li").length;
     if (taskText !== "") {
-   
-    const li = document.createElement("li");
-    li.textContent = taskText;
-  document.getElementById("taskList").appendChild(li);
 
-    
-     inputbox.value = "";
-  } else {
+        const li = document.createElement("li");
+        // li.id = "task" + (numberOfTasks + 1);
+        li.textContent = taskText;
+        taskList.appendChild(li);
+
+        inputbox.value = "";
+    } else {
     alert("Please enter a task.");
   }
 }
 
 
+function deleteAllTasks() {
+    const taskList = document.getElementById("taskList");
+    while (taskList.firstChild) {
+        taskList.removeChild(taskList.lastChild);
+    }
+}
 
 function deleteTask() {
     const taskList = document.getElementById("taskList");
@@ -27,9 +34,9 @@ function deleteTask() {
     }
 }
 
-function deleteAllTasks() {
-    const taskList = document.getElementById("taskList");
-    while (taskList.firstChild) {
-        taskList.removeChild(taskList.firstChild);
-    }
-}
+const taskList = document.getElementById("taskList");
+console.log(taskList);
+taskList.addEventListener("click", function(event) {
+    console.log(event.target.textContent);
+    taskList.removeChild(event.target);
+})

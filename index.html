@@ -3,9 +3,10 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" href="./main.css">
-    <script src="./script.js"></script>
+    <!-- <script src="./script.js"></script> -->
     <title> My To-Do List </title>
     <link  rel="icon" href="./todopic.jpg">
+    <h1>You have to delete tasks from down</h1>
   </head>
   <body>
       <input type="text" id="taskInput">
@@ -13,5 +14,54 @@
       <input type="button" value="remove all task" onclick="deleteAllTasks()">
       <input type="button" value="delete task as listed" onclick="deleteTask()">
       <ul id="taskList"> </ul> 
+
+      <script>
+        function addtask(){
+            const inputbox = document.getElementById("taskInput");
+            const taskText = inputbox.value;
+            const taskList = document.getElementById("taskList");
+            if (taskText !== "") {
+
+                const li = document.createElement("li");
+                const btn = document.createElement("button");
+                btn.textContent = "Delete";
+                btn.className = "delete";
+                btn.addEventListener("click", deleteTodo);
+                const span = document.createElement("span");
+                li.style.listStyleType = "none";
+                span.textContent = taskText;
+                li.appendChild(span );
+                li.appendChild(btn);
+                taskList.appendChild(li);
+
+                inputbox.value = "";
+            } else {
+            alert("Please enter a task.");
+          }
+        }
+
+        function deleteAllTasks() {
+            const taskList = document.getElementById("taskList");
+            while (taskList.firstChild) {
+                taskList.removeChild(taskList.lastChild);
+            }
+        }
+
+        function deleteTask() {
+            const taskList = document.getElementById("taskList");
+            const tasks = taskList.getElementsByTagName("li");
+            if (tasks.length > 0) {
+                taskList.removeChild(tasks[tasks.length - 1]);
+            } else {
+                alert("No tasks to delete.");
+            }
+        }
+
+        function deleteTodo(event) {
+            const li = event.target.parentNode;
+            li.parentNode.removeChild(li);
+        }
+
+      </script>
   </body>
 </html>
