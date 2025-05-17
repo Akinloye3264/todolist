@@ -40,3 +40,12 @@ taskList.addEventListener("click", function(event) {
     console.log(event.target.textContent);
     taskList.removeChild(event.target);
 })
+
+function markTaskAsDone(event) {
+    const task = event.target;
+    if (task.tagName === "LI") {
+        task.classList.toggle("done");
+    }
+}
+
+

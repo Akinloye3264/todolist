@@ -1,76 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="./main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <title>My To-Do List</title>
+    <title>To-Do List</title>
     <link rel="icon" href="./todopic.jpg">
 </head>
 <body>
     <div class="container">
-        <h1>My To-Do List</h1>
+        <h1>JJ's To-Do List 😌</h1>
         <p>Welcome to my To-Do List application! Here you can add, delete, and manage your tasks easily.</p>
-    <h1>Enter a task</h1>
-    <input type="text" id="taskInput">
-    <input type="button" value="Add a task" onclick="addtask()">
-    <input type="button" value="remove all task" onclick="deleteAllTasks()">
-    <input type="button" value="delete task " onclick="deleteTask()">
-    <ul id="taskList"></ul>
+        <h1>Enter a task</h1>
+        <input type="text" id="taskInput" placeholder="Task description">
+        <input type="datetime-local" id="taskReminder" placeholder="Set reminder">
+        <input type="email" id="taskEmail" placeholder="Enter your email"> <!-- Added email input -->
+        <input type="button" value="Add a task" onclick="addtask()">
+        <input type="button" value="remove all task" onclick="deleteAllTasks()">
+        <input type="button" value="delete task from below" onclick="deleteTask()">
+        <ul id="taskList"></ul>
+    </div>
 
     <script>
         const taskList = document.getElementById("taskList");
+        const taskInput = document.getElementById("taskInput");
+        const taskReminderInput = document.getElementById("taskReminder");
+        const taskEmailInput = document.getElementById("taskEmail"); // Get the email input
 
         // Function to load tasks from localStorage
         function loadTasks() {
-            const tasks = JSON.parse(localStorage.getItem('tasks')) || []; // Get tasks from localStorage or initialize an empty array
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
-            tasks.forEach(taskText => {
-                const li = document.createElement("li");
-                const btn = document.createElement("button");
-                btn.textContent = "Delete";
-                btn.className = "delete";
-                btn.addEventListener("click", deleteTodo);
-                const span = document.createElement("span");
-                li.style.listStyleType = "none";
-                span.textContent = taskText;
-                li.appendChild(span);
-                li.appendChild(btn);
-                taskList.appendChild(li);
+            tasks.forEach(task => {
+                addTaskToList(task.text, task.reminder, task.email);
             });
+            scheduleAllReminders();
         }
 
         // Function to save tasks to localStorage
         function saveTasks() {
-            const tasks = Array.from(taskList.querySelectorAll('li > span')).map(span => span.textContent); // Get all tasks from the list
-            localStorage.setItem('tasks', JSON.stringify(tasks)); // Save tasks to localStorage
+            const tasks = Array.from(taskList.querySelectorAll('li')).map(li => {
+                const span = li.querySelector('span');
+                return {
+                    text: span.textContent,
+                    reminder: li.dataset.reminder,
+                    email: li.dataset.email // Save the email
+                };
+            });
+            localStorage.setItem('tasks', JSON.stringify(tasks));
         }
 
         function addtask() {
-            const inputbox = document.getElementById("taskInput");
-            const taskText = inputbox.value;
+            const taskText = taskInput.value;
+            const taskReminder = taskReminderInput.value;
+            const taskEmail = taskEmailInput.value; // Get the email
 
             if (taskText !== "") {
-                const li = document.createElement("li");
-                const btn = document.createElement("button");
-                btn.textContent = "Delete";
-                btn.className = "delete";
-                btn.addEventListener("click", deleteTodo);
-                const span = document.createElement("span");
-                li.style.listStyleType = "none";
-                span.textContent = taskText;
-                li.appendChild(span);
-                li.appendChild(btn);
-                taskList.appendChild(li);
-
-                inputbox.value = "";
-
-                saveTasks(); // Save tasks to localStorage after adding a new task
+                addTaskToList(taskText, taskReminder, taskEmail);
+                taskInput.value = "";
+                taskReminderInput.value = "";
+                taskEmailInput.value = ""; // Clear the email input
+                saveTasks();
             } else {
                 alert("Please enter a task.");
             }
+        }
+
+        function addTaskToList(taskText, taskReminder, taskEmail) {
+            const li = document.createElement("li");
+            const btn = document.createElement("button");
+            btn.textContent = "Delete";
+            btn.className = "delete";
+            btn.addEventListener("click", deleteTodo);
+
+            const doneBtn = document.createElement("button");
+            doneBtn.textContent = "Done";
+            doneBtn.className = "done-button";
+            doneBtn.addEventListener("click", markTaskAsDone);
+
+            const span = document.createElement("span");
+            li.style.listStyleType = "none";
+            span.textContent = taskText;
+            li.appendChild(span);
+            li.appendChild(doneBtn);
+            li.appendChild(btn);
+
+            li.dataset.reminder = taskReminder; // Store reminder in data attribute
+            li.dataset.email = taskEmail; // Store email in data attribute
+
+            taskList.appendChild(li);
+
+            scheduleReminder(li);
         }
 
         function deleteAllTasks() {
@@ -78,7 +100,7 @@
             while (taskList.firstChild) {
                 taskList.removeChild(taskList.lastChild);
             }
-            saveTasks(); // Save tasks to localStorage after deleting all tasks
+            saveTasks();
         }
 
         function deleteTask() {
@@ -89,22 +111,69 @@
             } else {
                 alert("No tasks to delete.");
             }
-            saveTasks(); // Save tasks to localStorage after deleting a task
+            saveTasks();
         }
 
         function deleteTodo(event) {
             const li = event.target.parentNode;
             li.parentNode.removeChild(li);
-            saveTasks(); // Save tasks to localStorage after deleting a todo
+            saveTasks();
         }
 
-        taskInput.addEventListener("keyup", function(event) {
+        taskInput.addEventListener("keyup", function (event) {
             if (event.key === "Enter") {
                 addtask();
             }
         });
 
-        
+        function markTaskAsDone(event) {
+            const task = event.target.parentNode; // Get the LI element
+            task.classList.toggle("done");
+        }
+
+        function scheduleReminder(taskItem) {
+            const reminderTime = new Date(taskItem.dataset.reminder).getTime();
+            const now = new Date().getTime();
+            const timeLeft = reminderTime - now;
+
+            if (timeLeft > 0) {
+                setTimeout(() => {
+                    sendEmailReminder(taskItem.querySelector('span').textContent, taskItem.dataset.email); // Send email
+                }, timeLeft);
+            }
+        }
+
+        function scheduleAllReminders() {
+            const tasks = taskList.querySelectorAll('li');
+            tasks.forEach(task => {
+                scheduleReminder(task);
+            });
+        }
+
+       function sendEmailReminder(taskText, taskEmail) {
+            // Make an API call to your backend to send the email
+            fetch('http://localhost:5500/send-reminder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    task: taskText,
+                    email: taskEmail
+                })
+            })
+            .then(response => {
+                console.log('Response:', response); // Debugging
+                if (response.ok) {
+                    console.log('Email reminder sent successfully!');
+                } else {
+                    console.error('Failed to send email reminder.');
+                }
+            })
+            .catch(error => {
+                console.error('Error sending email reminder:', error);
+            });
+        }
         
 
         // Load tasks on page load
