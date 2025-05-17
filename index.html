@@ -1,26 +1,33 @@
-<!-- //creating a todo list using html,css and javascript. -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="./main.css">
-    <!-- <script src="./script.js"></script> --> 
-    <title> My To-Do List </title>
-    <link  rel="icon" href="./todopic.jpg">
-  </head>
-  <body>
-      <input type="text" id="taskInput">
-      <input type="button" value="Add a task" onclick="addtask()">
-      <input type="button" value="remove all task" onclick="deleteAllTasks()">
-      <input type="button" value="delete task " onclick="deleteTask()">
-      <ul id="taskList"> </ul> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <title>My To-Do List</title>
+    <link rel="icon" href="./todopic.jpg">
+</head>
+<body>
+    <div class="container">
+        <h1>My To-Do List</h1>
+        <p>Welcome to my To-Do List application! Here you can add, delete, and manage your tasks easily.</p>
+    <h1>Enter a task</h1>
+    <input type="text" id="taskInput">
+    <input type="button" value="Add a task" onclick="addtask()">
+    <input type="button" value="remove all task" onclick="deleteAllTasks()">
+    <input type="button" value="delete task " onclick="deleteTask()">
+    <ul id="taskList"></ul>
 
-      <script>
-        function addtask(){
-            const inputbox = document.getElementById("taskInput");
-            const taskText = inputbox.value;
-            const taskList = document.getElementById("taskList");
-            if (taskText !== "") {
+    <script>
+        const taskList = document.getElementById("taskList");
 
+        // Function to load tasks from localStorage
+        function loadTasks() {
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || []; // Get tasks from localStorage or initialize an empty array
+
+            tasks.forEach(taskText => {
                 const li = document.createElement("li");
                 const btn = document.createElement("button");
                 btn.textContent = "Delete";
@@ -29,14 +36,41 @@
                 const span = document.createElement("span");
                 li.style.listStyleType = "none";
                 span.textContent = taskText;
-                li.appendChild(span );
+                li.appendChild(span);
+                li.appendChild(btn);
+                taskList.appendChild(li);
+            });
+        }
+
+        // Function to save tasks to localStorage
+        function saveTasks() {
+            const tasks = Array.from(taskList.querySelectorAll('li > span')).map(span => span.textContent); // Get all tasks from the list
+            localStorage.setItem('tasks', JSON.stringify(tasks)); // Save tasks to localStorage
+        }
+
+        function addtask() {
+            const inputbox = document.getElementById("taskInput");
+            const taskText = inputbox.value;
+
+            if (taskText !== "") {
+                const li = document.createElement("li");
+                const btn = document.createElement("button");
+                btn.textContent = "Delete";
+                btn.className = "delete";
+                btn.addEventListener("click", deleteTodo);
+                const span = document.createElement("span");
+                li.style.listStyleType = "none";
+                span.textContent = taskText;
+                li.appendChild(span);
                 li.appendChild(btn);
                 taskList.appendChild(li);
 
                 inputbox.value = "";
+
+                saveTasks(); // Save tasks to localStorage after adding a new task
             } else {
-            alert("Please enter a task.");
-          }
+                alert("Please enter a task.");
+            }
         }
 
         function deleteAllTasks() {
@@ -44,6 +78,7 @@
             while (taskList.firstChild) {
                 taskList.removeChild(taskList.lastChild);
             }
+            saveTasks(); // Save tasks to localStorage after deleting all tasks
         }
 
         function deleteTask() {
@@ -54,13 +89,26 @@
             } else {
                 alert("No tasks to delete.");
             }
+            saveTasks(); // Save tasks to localStorage after deleting a task
         }
 
         function deleteTodo(event) {
             const li = event.target.parentNode;
             li.parentNode.removeChild(li);
+            saveTasks(); // Save tasks to localStorage after deleting a todo
         }
 
-      </script>
-  </body>
+        taskInput.addEventListener("keyup", function(event) {
+            if (event.key === "Enter") {
+                addtask();
+            }
+        });
+
+        
+        
+
+        // Load tasks on page load
+        loadTasks();
+    </script>
+</body>
 </html>
