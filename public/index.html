@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Smart To-Do List</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="title">
+                    <i class="fas fa-check-circle"></i>
+                    Smart To-Do List
+                </h1>
+                <p class="subtitle">Organize your tasks with email reminders and calendar integration</p>
+            </div>
+        </header>
+
+        <!-- Current Time Display -->
+        <div id="currentTimeDisplay" style="text-align:center; font-size:1.2em; margin-bottom: 20px; color: #667eea;"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Add Task Form -->
+            <div class="task-form-container">
+                <form id="taskForm" class="task-form">
+                    <div class="form-group">
+                        <label for="taskInput" class="form-label">
+                            <i class="fas fa-tasks"></i>
+                            Task Description
+                        </label>
+                        <input 
+                            type="text" 
+                            id="taskInput" 
+                            class="form-input" 
+                            placeholder="What do you need to do?"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="taskReminder" class="form-label">
+                                <i class="fas fa-clock"></i>
+                                Reminder Time
+                            </label>
+                            <input 
+                                type="datetime-local" 
+                                id="taskReminder" 
+                                class="form-input"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="taskEmail" class="form-label">
+                                <i class="fas fa-envelope"></i>
+                                Email Address
+                            </label>
+                            <input 
+                                type="email" 
+                                id="taskEmail" 
+                                class="form-input" 
+                                placeholder="your@email.com"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Add Task
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="addToCalendar()">
+                            <i class="fas fa-calendar-plus"></i>
+                            Add to Calendar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Task Controls -->
+            <div class="task-controls">
+                <button class="btn btn-danger" onclick="deleteAllTasks()">
+                    <i class="fas fa-trash"></i>
+                    Clear All
+                </button>
+                <button class="btn btn-warning" onclick="deleteLastTask()">
+                    <i class="fas fa-undo"></i>
+                    Remove Last
+                </button>
+            </div>
+
+            <!-- Task List -->
+            <div class="task-list-container">
+                <h2 class="task-list-title">
+                    <i class="fas fa-list"></i>
+                    Your Tasks
+                    <span id="taskCount" class="task-count">0</span>
+                </h2>
+                <ul id="taskList" class="task-list"></ul>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 Emmanuel Todo_list</p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Sending reminder...</p>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="successToast" class="toast toast-success hidden">
+        <i class="fas fa-check-circle"></i>
+        <span id="successMessage"></span>
+    </div>
+
+    <!-- Error Toast -->
+    <div id="errorToast" class="toast toast-error hidden">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="errorMessage"></span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
