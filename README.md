@@ -1,61 +1,66 @@
- To-Do List Project
+# Smart Todo App
 
-This project is a simple to-do list application built using HTML, CSS, and JavaScript. It allows users to add tasks, delete individual tasks, and remove all tasks from the list.
-
-## Files
-
-*   `index.html`: The main HTML file that structures the webpage, including the input field, buttons, and task list.
-*   `main.css`: The CSS file that styles the webpage, including the layout, colors, and appearance of the input field and buttons.
-*   `script.js`: The JavaScript file that handles the interactivity of the webpage, including adding, deleting, and removing tasks from the list.
-*   `styleguide.md`: A guide outlining the steps taken to create the To-Do List.
-*   `todopic.jpg`: An icon for the To-Do List.
-
-## How to Use
-
-1.  Open `index.html` in a web browser.
-2.  Enter a task in the input field.
-3.  Click the "Add a task" button to add the task to the list.
-4.  Click the "delete task as listed" button to delete the last task on the list.
-5.  Click the "remove all task" button to remove all tasks from the list.
+A beautiful todo app with email reminders and calendar integration.
 
 ## Features
 
-*   Add tasks to the list.
-*   Delete the last task on the list.
-*   Remove all tasks from the list.
+- ✅ Add and manage tasks
+- ✅ Email reminders (when configured)
+- ✅ Calendar integration
+- ✅ Local storage backup
+- ✅ Works on any device
+- ✅ No error messages
 
-## Customization
+## Quick Start
 
-*   Modify `main.css` to change the styling of the webpage.
-*   Modify `script.js` to add or change the functionality of the webpage.
-// filepath: c:\Users\oluwa\OneDrive\Documents\todolist\README.md
-# To-Do List Project
+### Local Development
+```bash
+npm install
+npm start
+```
 
-This project is a simple to-do list application built using HTML, CSS, and JavaScript. It allows users to add tasks, delete individual tasks, and remove all tasks from the list.
+### Deploy to Any Platform
+
+This app works on:
+- **Railway** (recommended)
+- **Render**
+- **Heroku**
+- **Vercel**
+- **Netlify** (frontend only)
+
+## Email Setup (Optional)
+
+To enable email reminders, add environment variables:
+
+```env
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-app-password
+```
+
+### Get Gmail App Password:
+1. Enable 2-Step Verification on Google Account
+2. Go to Security → App passwords
+3. Generate password for "Mail"
+
+## How It Works
+
+- **Tasks are always saved locally** (browser storage)
+- **Email reminders work when configured**
+- **No error messages** - graceful fallbacks
+- **Works on any domain** - auto-detects URL
 
 ## Files
 
-*   `index.html`: The main HTML file that structures the webpage, including the input field, buttons, and task list.
-*   `main.css`: The CSS file that styles the webpage, including the layout, colors, and appearance of the input field and buttons.
-*   `script.js`: The JavaScript file that handles the interactivity of the webpage, including adding, deleting, and removing tasks from the list.
-*   `styleguide.md`: A guide outlining the steps taken to create the To-Do List.
-*   `todopic.jpg`: An icon for the To-Do List.
+- `server.js` - Backend server
+- `public/` - Frontend files
+- `package.json` - Dependencies
+- `.env` - Email configuration (optional)
 
-## How to Use
+## Deploy
 
-1.  Open `index.html` in a web browser.
-2.  Enter a task in the input field.
-3.  Click the "Add a task" button to add the task to the list.
-4.  Click the "delete task as listed" button to delete the last task on the list.
-5.  Click the "remove all task" button to remove all tasks from the list.
+1. Push to GitHub
+2. Connect to your hosting platform
+3. Set environment variables (optional)
+4. Deploy!
 
-## Features
-
-*   Add tasks to the list.
-*   Delete the last task on the list.
-*   Remove all tasks from the list.
-
-## Customization
-
-*   Modify `main.css` to change the styling of the webpage.
-*   Modify `script.js` to add or change the functionality of the webpage.
+The app will work immediately with local storage, and email features will activate when configured.

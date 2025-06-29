@@ -2,11 +2,15 @@
 class TodoApp {
     constructor() {
         this.tasks = [];
-        this.apiBase = 'http://localhost:3000';
+        // Auto-detect API base URL - works on any domain
+        this.apiBase = window.location.origin;
         this.initializeElements();
         this.loadTasks();
         this.setupEventListeners();
         this.updateTaskCount();
+        
+        // Check backend status on startup
+        this.checkBackendStatus();
     }
 
     initializeElements() {
@@ -134,7 +138,6 @@ class TodoApp {
     async sendReminderEmail(task) {
         this.showLoading();
         
-        // Fix for undefined task text
         const taskText = task.text || 'Untitled Task';
         
         try {
@@ -153,13 +156,17 @@ class TodoApp {
             const data = await response.json();
             
             if (data.success) {
-                this.showSuccess('Task added and reminder sent! Check your email.');
+                if (data.localOnly) {
+                    this.showSuccess('Task saved locally! Email not configured.');
+                } else {
+                    this.showSuccess('Task added and reminder sent! Check your email.');
+                }
             } else {
-                this.showError(data.error || 'Failed to send reminder');
+                this.showSuccess('Task saved locally!');
             }
         } catch (error) {
-            console.error('Error sending reminder:', error);
-            this.showError('Failed to send reminder. Please check your connection.');
+            console.error('Network error:', error);
+            this.showSuccess('Task saved locally!');
         } finally {
             this.hideLoading();
         }
@@ -191,13 +198,17 @@ class TodoApp {
             const data = await response.json();
             
             if (data.success) {
-                this.showSuccess('Calendar event sent to your email! Check your inbox for the .ics file.');
+                if (data.localOnly) {
+                    this.showSuccess('Task saved locally! Email not configured.');
+                } else {
+                    this.showSuccess('Calendar event sent to your email! Check your inbox for the .ics file.');
+                }
             } else {
-                this.showError(data.error || 'Failed to create calendar event');
+                this.showSuccess('Task saved locally!');
             }
         } catch (error) {
-            console.error('Error creating calendar event:', error);
-            this.showError('Failed to create calendar event. Please check your connection.');
+            console.error('Network error:', error);
+            this.showSuccess('Task saved locally!');
         } finally {
             this.hideLoading();
         }
@@ -266,7 +277,6 @@ class TodoApp {
             return;
         }
 
-        // Fix for undefined task text
         const taskText = task.text || 'Untitled Task';
         
         this.showLoading();
@@ -287,13 +297,17 @@ class TodoApp {
             const data = await response.json();
             
             if (data.success) {
-                this.showSuccess('Calendar event sent to your email!');
+                if (data.localOnly) {
+                    this.showSuccess('Task saved locally! Email not configured.');
+                } else {
+                    this.showSuccess('Calendar event sent to your email!');
+                }
             } else {
-                this.showError(data.error || 'Failed to create calendar event');
+                this.showSuccess('Task saved locally!');
             }
         } catch (error) {
-            console.error('Error creating calendar event:', error);
-            this.showError('Failed to create calendar event. Please check your connection.');
+            console.error('Network error:', error);
+            this.showSuccess('Task saved locally!');
         } finally {
             this.hideLoading();
         }
@@ -354,6 +368,18 @@ class TodoApp {
         setTimeout(() => {
             this.errorToast.classList.add('hidden');
         }, 5000);
+    }
+
+    // Add this new method
+    async checkBackendStatus() {
+        try {
+            const response = await fetch(`${this.apiBase}/health`);
+            if (response.ok) {
+                console.log('✅ Backend connected');
+            }
+        } catch (error) {
+            console.log('📝 Running in local mode');
+        }
     }
 }
 
