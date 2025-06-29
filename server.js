@@ -2,11 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 const path = require('path');
+const os = require('os');
 require('dotenv').config();
 
 const app = express();
-const port = 3000; 
-
+const port = process.env.PORT || 3000; 
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -212,12 +212,29 @@ app.post('/add-to-calendar', async (req, res) => {
     }
 });
 
+// Function to get local IP address
+function getLocalIP() {
+    const interfaces = os.networkInterfaces();
+    for (const name of Object.keys(interfaces)) {
+        for (const interface of interfaces[name]) {
+            const {address, family, internal} = interface;
+            if (family === 'IPv4' && !internal) {
+                return address;
+            }
+        }
+    }
+    return 'localhost';
+}
+
 // Initialize email on server start
 initializeEmail();
 
 // Start server
 app.listen(port, '0.0.0.0', () => {
-    console.log(`🚀 Server running on http://localhost:${port}`);
+    const localIP = getLocalIP();
+    console.log(`🚀 Server running on port ${port}`);
+    console.log(`🌐 Local: http://localhost:${port}`);
+    console.log(`📱 Mobile: http://${localIP}:${port}`);
     console.log(`📧 Email reminders: ${transporter ? 'Ready' : 'Not configured'}`);
     console.log(`📅 Calendar events: ${transporter ? 'Ready' : 'Not configured'}`);
 });
