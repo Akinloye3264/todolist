@@ -157,16 +157,16 @@ class TodoApp {
             
             if (data.success) {
                 if (data.localOnly) {
-                    this.showSuccess('Task saved locally! Email not configured.');
+                    this.showSuccess('Task saved successfully!');
                 } else {
-                    this.showSuccess('Task added and reminder sent! Check your email.');
+                    this.showSuccess('Task saved successfully and we will send an email to you!');
                 }
             } else {
-                this.showSuccess('Task saved locally!');
+                this.showSuccess('Task saved successfully!');
             }
         } catch (error) {
             console.error('Network error:', error);
-            this.showSuccess('Task saved locally!');
+            this.showSuccess('Task saved successfully!');
         } finally {
             this.hideLoading();
         }
@@ -199,16 +199,16 @@ class TodoApp {
             
             if (data.success) {
                 if (data.localOnly) {
-                    this.showSuccess('Task saved locally! Email not configured.');
+                    this.showSuccess('Task saved successfully!');
                 } else {
-                    this.showSuccess('Calendar event sent to your email! Check your inbox for the .ics file.');
+                    this.showSuccess('Task saved successfully and calendar event sent to your email!');
                 }
             } else {
-                this.showSuccess('Task saved locally!');
+                this.showSuccess('Task saved successfully!');
             }
         } catch (error) {
             console.error('Network error:', error);
-            this.showSuccess('Task saved locally!');
+            this.showSuccess('Task saved successfully!');
         } finally {
             this.hideLoading();
         }
@@ -298,16 +298,16 @@ class TodoApp {
             
             if (data.success) {
                 if (data.localOnly) {
-                    this.showSuccess('Task saved locally! Email not configured.');
+                    this.showSuccess('Task saved successfully!');
                 } else {
                     this.showSuccess('Calendar event sent to your email!');
                 }
             } else {
-                this.showSuccess('Task saved locally!');
+                this.showSuccess('Task saved successfully!');
             }
         } catch (error) {
             console.error('Network error:', error);
-            this.showSuccess('Task saved locally!');
+            this.showSuccess('Task saved successfully!');
         } finally {
             this.hideLoading();
         }
