@@ -31,19 +31,11 @@ class TodoApp {
     setupEventListeners() {
         this.taskForm.addEventListener('submit', (e) => this.handleAddTask(e));
         
-        // Set default reminder time to tomorrow
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        tomorrow.setHours(10, 0, 0, 0);
-        this.taskReminderInput.value = tomorrow.toISOString().slice(0, 16);
-        // Auto-fill with current device time on focus
-        this.taskReminderInput.addEventListener('focus', () => {
-            const now = new Date();
-            // Format for datetime-local: yyyy-MM-ddTHH:mm
-            const pad = n => n < 10 ? '0' + n : n;
-            const formatted = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
-            this.taskReminderInput.value = formatted;
-        });
+        // Set default reminder time to current time
+        const now = new Date();
+        this.taskReminderInput.value = now.toISOString().slice(0, 16);
+       
+        
         // Start current time updater
         this.updateCurrentTime();
         setInterval(() => this.updateCurrentTime(), 1000);
@@ -92,15 +84,12 @@ class TodoApp {
         e.preventDefault();
         
         const taskText = this.taskInput.value.trim();
-        const taskReminder = this.taskReminderInput.value;
+        // Always use current time for reminder
+        const taskReminder = new Date().toISOString().slice(0, 16);
         const taskEmail = this.taskEmailInput.value.trim();
 
         if (!taskText) {
             this.showError('Please enter a task description');
-            return;
-        }
-        if (!taskReminder) {
-            this.showError('Please set a reminder time');
             return;
         }
         if (!taskEmail) {
@@ -125,11 +114,9 @@ class TodoApp {
         // Clear form
         this.taskForm.reset();
         
-        // Set default reminder time again
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        tomorrow.setHours(10, 0, 0, 0);
-        this.taskReminderInput.value = tomorrow.toISOString().slice(0, 16);
+        // Set default reminder time again to current time
+        const now = new Date();
+        this.taskReminderInput.value = now.toISOString().slice(0, 16);
 
         // Send reminder email
         await this.sendReminderEmail(task);
@@ -175,11 +162,10 @@ class TodoApp {
     async addToCalendar() {
         const task = {
             text: this.taskInput.value.trim(),
-            reminder: this.taskReminderInput.value,
             email: this.taskEmailInput.value.trim()
         };
 
-        if (!task.text || !task.reminder || !task.email) {
+        if (!task.text || !task.email) {
             this.showError('Please fill in all fields first');
             return;
         }

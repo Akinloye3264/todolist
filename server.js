@@ -1,11 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
+const port = process.env.PORT || 3000;
 const path = require('path');
 require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+
+
 
 // Middleware
 app.use(cors());
@@ -119,9 +121,9 @@ app.post('/send-reminder', async (req, res) => {
 
 // Add to calendar
 app.post('/add-to-calendar', async (req, res) => {
-    const { task, reminder, email } = req.body;
+    const { task, email } = req.body;
 
-    if (!task || !reminder || !email) {
+    if (!task || !email) {
         return res.status(400).json({
             success: false,
             error: 'Missing required fields'
@@ -130,16 +132,14 @@ app.post('/add-to-calendar', async (req, res) => {
 
     if (!transporter) {
         return res.status(200).json({
-            success: true,
-            message: 'Task saved locally. Email not configured.',
-            localOnly: true
+            success: false,
+            message: 'Email not configured.',
+            localOnly: false
         });
     }
 
     try {
-        const reminderDate = new Date(reminder);
-        
-        // Create calendar event
+        // Create calendar event WITHOUT date/time
         const icsEvent = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
@@ -147,8 +147,6 @@ app.post('/add-to-calendar', async (req, res) => {
             'BEGIN:VEVENT',
             `UID:${Date.now()}@todoapp.com`,
             `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z`,
-            `DTSTART:${reminderDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z`,
-            `DTEND:${new Date(reminderDate.getTime() + 60*60*1000).toISOString().replace(/[-:]/g, '').split('.')[0]}Z`,
             `SUMMARY:${task}`,
             `DESCRIPTION:Task reminder: ${task}`,
             'END:VEVENT',
@@ -164,13 +162,12 @@ app.post('/add-to-calendar', async (req, res) => {
                     <h2 style="color: #667eea;">📅 Calendar Event</h2>
                     <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
                         <h3 style="margin-top: 0;">${task}</h3>
-                        <p><strong>Date:</strong> ${reminderDate.toLocaleString()}</p>
-                        <p><strong>Duration:</strong> 1 hour</p>
+                        <p><strong>Date:</strong> <em>No date set. Please set the date/time in your calendar app.</em></p>
                     </div>
                     <p>Attached is a calendar file (.ics) that you can import into your calendar app.</p>
                 </div>
             `,
-            text: `Calendar Event: ${task}\n\nDate: ${reminderDate.toLocaleString()}\nDuration: 1 hour\n\nAttached is a calendar file (.ics) that you can import into your calendar app.`,
+            text: `Calendar Event: ${task}\n\nDate: (No date set. Please set the date/time in your calendar app.)\n\nAttached is a calendar file (.ics) that you can import into your calendar app.`,
             attachments: [
                 {
                     filename: 'event.ics',
@@ -208,6 +205,6 @@ const emailConfigured = initEmail();
 // Start server
 app.listen(port, '0.0.0.0', () => {
     console.log(`🚀 Server running on port ${port}`);
-    console.log(`📧 Email: ${emailConfigured ? '✅ Configured' : '📝 Local only'}`);
+    console.log(`📧 Email: ${emailConfigured ? '✅ Configured' : '📝 '}`);
     console.log(`🌐 Ready for deployment!`);
 }); 
